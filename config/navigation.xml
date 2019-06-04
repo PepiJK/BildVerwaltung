@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigation>
+	<anonym>
+		<home>Home</home>
+		<hilfe>Hilfe</hilfe>
+		<impressum>Impressum</impressum>
+		<login>1</login>
+	</anonym>
+	<registriert>
+		<home>Home</home>
+		<bildverwaltung>Bildverwaltung</bildverwaltung>
+		<profilverwaltung>Profilverwaltung</profilverwaltung>
+		<hilfe>Hilfe</hilfe>
+		<impressum>Impressum</impressum>
+		<login>0</login>
+	</registriert>
+	<admin>
+		<home>Home</home>
+		<userverwaltung>Userverwaltung</userverwaltung>
+		<hilfe>Hilfe</hilfe>
+		<impressum>Impressum</impressum>
+		<login>0</login>
+	</admin>
+</navigation>
