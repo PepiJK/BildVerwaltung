@@ -4,19 +4,18 @@
 	include './utility/DB.class.php';
 	include "./model/USER.class.php";
 
+	// create database object -> connect to database
 	$db = new DB();
 
-	// if user is is logged in create user object
+	// if user is logged in create user object
 	if(isset($_SESSION['username'])) {
 		$user = new USER($_SESSION['username'], $_SESSION['vorname'], $_SESSION['nachname'], $_SESSION['email'], $_SESSION['password'], $_SESSION['admin']);
 	}
 
-	// standard link = Home
+	// standard url = home
 	if (!isset($_GET['url'])) {
 		$_GET['url'] = 'home';
 	}
-	//$_SESSION['loggedin'] = true;
-	//$_SESSION['admin'] = true;
 
 ?>
 
@@ -80,10 +79,70 @@
 						</ul>
 					</div>
 				</div>
+				<hr class="mt-5">
+
+				<h3 class="mt-5 text-center">Team</h3>
+
+				<!-- Daniel Krottendorfer -->
+				<div id="daniel" class="row align-items-center justify-content-sm-center mt-2 py-5 rounded">
+					<div class="col-12 col-sm-3 col-md-4 text-center">
+						<img class="img-fluid rounded-circle mb-2 teampics" src="./res/img/daniel.jpg" alt="Daniel Krottendorfer" />
+					</div>
+					<div class="col-12 col-sm-9 col-md-8 col-lg-5 text-center text-sm-left">
+						<h4 class="">Daniel Krottendorfer</h4>
+						<table class="table">
+							<tr>
+								<td>Username</td>
+								<td>if18b030</td>
+							</tr>
+							<tr>
+								<td>E-Mail</td>
+								<td><a class="text-dark" href="mailto:if18b030@technikum-wien.at">if18b030@technikum-wien.at</a></td>
+							</tr>
+							<tr>
+								<td>Verband / Gruppe</td>
+								<td>2C</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+				<!-- Josef Koch -->
+				<div id="josef" class="row align-items-center justify-content-sm-center mt-3 py-5 rounded">
+					<div class="col-12 col-sm-3 col-md-4 text-center order-sm-2">
+						<img class="img-fluid rounded-circle mb-2 teampics" src="./res/img/josef.jpg" alt="Josef Koch" />
+					</div>
+					<div class="col-12 col-sm-9 col-md-8 col-lg-5 text-center text-sm-right order-sm-1">
+						<h4 class="">Josef Koch</h4>
+						<table class="table">
+							<tr>
+								<td>Username</td>
+								<td>if18b061</td>
+							</tr>
+							<tr>
+								<td>E-Mail</td>
+								<td><a class="text-dark" href="mailto:if18b061@technikum-wien.at">if18b061@technikum-wien.at</a></td>
+							</tr>
+							<tr>
+								<td>Verband / Gruppe</td>
+								<td>2C</td>
+							</tr>
+						</table>
+					</div>
+				</div>
 			</div>
 		</main>
 
 		<?php } ?>
+
+		<!-- Footer -->
+		<footer>
+			<div class="container-fluid bg-dark text-center text-light py-2">
+				<a class="text-light" href="./index.php?url=home#daniel">Daniel Krottendorfer</a> |
+				<a class="text-light" href="./index.php?url=home#josef">Josef Koch</a><br />
+				<a class="text-light" target="_blank" href="http://www.technikum-wien.at">FH Technikum</a> 2019
+			</div>
+		</footer>
 
 		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
