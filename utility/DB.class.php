@@ -86,5 +86,39 @@ class DB {
 			return false;
 		}
 	}
+
+	// change User Data from form input
+	public function changeUserData($user, $vor, $nach, $email) {
+		$dbUser = $user->username;
+		$dbVor = $this->connection->real_escape_string($vor);
+		$dbNach = $this->connection->real_escape_string($nach);
+		$dbEmail = $this->connection->real_escape_string($email);
+
+		$sql = "UPDATE users SET vorname='$dbVor', nachname='$dbNach', email='$dbEmail' WHERE username='$dbUser'";
+
+		if ($this->connection->query($sql)) {
+			$user->updateUserData($dbVor, $dbNach, $dbEmail);
+			return true;
+		}
+		return false;
+	}
+
+	// change User Password from form input
+	public function changeUserPassword($user, $newPwd) {
+		$dbPwd = password_hash($this->connection->real_escape_string($newPwd), PASSWORD_DEFAULT);
+		$dbUser = $user->username;
+
+		$sql = "UPDATE users SET password='$dbPwd' WHERE username='$dbUser'";
+
+		if ($this->connection->query($sql)) {
+			$user->updateUserPassword($dbPwd);
+			return true;
+		}
+		return false;
+	}
+
+	public function __destruct() {
+		$this->connection->close();
+	}
 	
 }

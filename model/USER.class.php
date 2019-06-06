@@ -55,11 +55,27 @@ class USER {
 		setcookie($this->username, true, time() - 3600); 
 		session_unset();
 		session_destroy();
-		if($_GET['url'] == 'userverwaltung' || $_GET['url'] == 'bildverwaltung' || $_GET['url'] == 'userverwaltung') {
+		if($_GET['url'] == 'userverwaltung' || $_GET['url'] == 'bildverwaltung' || $_GET['url'] == 'profilverwaltung') {
 			header('Location:index.php?url=home');
 		} else {
 			header('Location:index.php?url=' . $_GET['url']);
 		}
+	}
+
+	public function updateUserData($dbVor, $dbNach, $dbEmail) {
+		$this->vorname = $dbVor;
+		$this->nachname = $dbNach;
+		$this->email = $dbEmail;
+
+		$_SESSION['vorname'] = $dbVor;
+		$_SESSION['nachname'] = $dbNach;
+		$_SESSION['email'] = $dbEmail;
+	}
+
+	public function updateUserPassword($dbPwd) {
+		$this->password = $dbPwd;
+		
+		$_SESSION['password'] = $dbPwd;
 	}
 
 }

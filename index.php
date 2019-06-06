@@ -41,6 +41,7 @@
 			include "./inc/hilfe.php";
 			include "./inc/impressum.php";
 			include './inc/registrieren.php';
+			include './inc/profilverwaltung.php';
 		?>
 
 		<!-- Footer -->
