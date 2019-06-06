@@ -1,5 +1,4 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -18,19 +17,36 @@ USE `bildverwaltung`;
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `communication`
+-- Tabellenstruktur für Tabelle `users`
 --
-/*
-CREATE TABLE `communication` (
-  `commid` int(11) NOT NULL,
-  `fk_user_sender` int(11) NOT NULL,
-  `fk_user_empf` int(11) NOT NULL,
-  `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fk_messageid` int(11) NOT NULL,
-  `isread` tinyint(4) NOT NULL DEFAULT '0'
+
+CREATE TABLE `users` (
+  `username` varchar(50) NOT NULL,
+  `vorname` varchar(50) NOT NULL,
+  `nachname` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `is_admin` boolean
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-*/
+
 -- --------------------------------------------------------
+
+--
+-- Indizes für die Tabelle `users`
+--
+ALTER TABLE `users`
+ADD PRIMARY KEY (`username`);
+
+-- --------------------------------------------------------
+
+--
+-- Admin User in die Tabelle `users` einfügen
+-- Passwort = 12345
+--
+
+-- INSERT INTO `users` (`username`, `vorname`, `nachname`, `email`, `password`, `is_admin`) 
+-- VALUES ("admin", "adminVorname", "adminNachname", "adminEmail", "$2y$10$RxG6taFmPvxRcTuHuOJo/.aiwiLz71Ph1xgwDKPmyNKWx7Lt8NIF.", 1);
+
 
 --
 -- Tabellenstruktur für Tabelle `messages`

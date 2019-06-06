@@ -1,6 +1,16 @@
 <?php 
 	session_start();
 
+	include './utility/DB.class.php';
+	include "./model/USER.class.php";
+
+	$db = new DB();
+
+	// if user is is logged in create user object
+	if(isset($_SESSION['username'])) {
+		$user = new USER($_SESSION['username'], $_SESSION['vorname'], $_SESSION['nachname'], $_SESSION['email'], $_SESSION['password'], $_SESSION['admin']);
+	}
+
 	// standard link = Home
 	if (!isset($_GET['url'])) {
 		$_GET['url'] = 'home';
@@ -26,10 +36,10 @@
 
 	<body>
 		<?php 
-			include "./inc/header.php";
-			include "./inc/registrieren.php";
+			include './inc/header.php';
+			include './inc/registrieren.php';
 
-			if ($_GET['url'] == "home") { ?>
+			if ($_GET['url'] == 'home') { ?>
 
 		<main>
 			<div class="container">
@@ -78,6 +88,7 @@
 		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+		<script src="./res/js/regValidation.js"></script>
 	</body>
 
 </html>

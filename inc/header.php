@@ -1,4 +1,32 @@
 <?php
+
+	// try login process via existing cookie when not allready loged in
+	if(!isset($_SESSION['loggedin'])) {
+		//check all users in database who match cookie name
+		$query = $db->getUserCookie();
+
+		// if username matches existing cookie name -> create user object and log user in
+		if($query) {
+			$user = new USER($query->username, $query->vorname, $query->nachname, $query->email, $query->password, $query->is_admin);
+			$user->loginUser(true);
+		}
+	}
+	
+
+	// login process via form submit
+	if (isset($_POST['username']) && isset($_POST['password'])) {
+		// query the data in database and return it on success
+		$query = $db->getUser($_POST['username'], $_POST['password']);
+
+		// if query was successfull -> create user object and log user in
+		if($query) {
+			// loginckeck -> determines if cookie will be created or not
+			if(isset($_POST['loginCheck'])) { $loginCheck = true; } else { $loginCheck = false; }
+			$user = new USER($query->username, $query->vorname, $query->nachname, $query->email, $query->password, $query->is_admin);
+			$user->loginUser($loginCheck);
+		}
+	}
+	
 	$navigationFile = simplexml_load_file('./config/navigation.xml');
 
 	// anonymous user
@@ -14,6 +42,11 @@
 	// admin user
 	else if (isset($_SESSION['loggedin']) && isset($_SESSION['admin'])) {
 		$navigation = (array) $navigationFile->admin;
+	}
+
+	// logout process
+	if(isset($_GET['logout'])) {
+		$user->logoutUser();
 	}
 ?>
 
@@ -42,7 +75,7 @@
 					// omit the last item because of login (Array-Element is either 0 or 1)
 					if ($item === array_key_last($navigation)) { break; } ?>
 
-				<li class="nav-item <?php if ($_GET['url'] == $item) echo "active" ?>">
+				<li class="nav-item <?php if ($_GET['url'] == $item) echo 'active' ?>">
 					<a class="nav-link" href="index.php?url=<?php echo $item ?>"><?php echo $element ?></a>
 				</li>
 
@@ -59,10 +92,10 @@
 
 			<form class="dropdown-menu dropdown-menu-right p-4" action="./index.php?url=<?php echo $_GET['url'] ?>" method="post">
 				<div class="form-group">
-					<input type="text" class="form-control" id="username" name="username" placeholder="Username">
+					<input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
 				</div>
 				<div class="form-group">
-					<input type="password" class="form-control" id="password" name="password" placeholder="Password">
+					<input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
 				</div>
 				<div class="form-check">
 					<input type="checkbox" class="form-check-input" name="loginCheck" id="loginCheck">
@@ -83,7 +116,7 @@
 
 			<ul class="navbar-nav">
 				<li class="nav-item text-center mr-3 text-light">
-					eingeloggt als user <?php echo $_SESSION['username'] ?>
+					eingeloggt als user <?php echo $user->username ?>
 				</li>
 			</ul>
 
