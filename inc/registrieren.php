@@ -61,4 +61,4 @@ if ($_GET['url'] == 'userregistration') {
 	</div>
 </main>
 
-<?php } ?>
+<?php }

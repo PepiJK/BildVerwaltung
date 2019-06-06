@@ -24,6 +24,8 @@
 			if(isset($_POST['loginCheck'])) { $loginCheck = true; } else { $loginCheck = false; }
 			$user = new USER($query->username, $query->vorname, $query->nachname, $query->email, $query->password, $query->is_admin);
 			$user->loginUser($loginCheck);
+		} else {
+			$errorMsg = '<ul class="navbar-nav"> <li class="nav-item text-center text-white bg-danger rounded mr-3 p-2">Anmeldung Fehlgeschlagen!</li></ul>';
 		}
 	}
 	
@@ -35,12 +37,12 @@
 	}
 
 	// loggedin user
-	else if (isset($_SESSION['loggedin']) && !isset($_SESSION['admin'])) {
+	else if (isset($_SESSION['loggedin']) && !$_SESSION['admin']) {
 		$navigation = (array) $navigationFile->registriert;
 	}
 
 	// admin user
-	else if (isset($_SESSION['loggedin']) && isset($_SESSION['admin'])) {
+	else if (isset($_SESSION['loggedin']) && $_SESSION['admin']) {
 		$navigation = (array) $navigationFile->admin;
 	}
 
@@ -84,7 +86,8 @@
 			</ul>
 
 			<!-- Check if the user is either able to login or to logout-->
-			<?php if ($navigation['login']) { ?>
+			<?php if ($navigation['login']) { 
+				if (isset($errorMsg)) echo $errorMsg ?>
 
 			<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				<i class="fas fa-sign-in-alt"></i>

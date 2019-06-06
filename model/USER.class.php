@@ -55,7 +55,11 @@ class USER {
 		setcookie($this->username, true, time() - 3600); 
 		session_unset();
 		session_destroy();
-		header('Location:index.php?link=' . $_GET['url']);
+		if($_GET['url'] == 'userverwaltung' || $_GET['url'] == 'bildverwaltung' || $_GET['url'] == 'userverwaltung') {
+			header('Location:index.php?url=home');
+		} else {
+			header('Location:index.php?url=' . $_GET['url']);
+		}
 	}
 
 }
