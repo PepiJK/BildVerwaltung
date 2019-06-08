@@ -20,7 +20,7 @@ class DB {
 			$dbEmail = "adminEmail";
 			$dbPwd = password_hash("12345", PASSWORD_DEFAULT);
 
-			$sql = "INSERT INTO `users` (`username`, `vorname`, `nachname`, `email`, `password`, `is_admin`) VALUES (?, ?, ?, ?, ?, 1)";
+			$sql = "INSERT INTO `users` (`username`, `vorname`, `nachname`, `email`, `password`, `is_admin`, `status`) VALUES (?, ?, ?, ?, ?, 1, 1)";
 			$statement = $this->connection->prepare($sql);
 			$statement->bind_param("sssss", $dbUser, $dbVor, $dbNach, $dbEmail, $dbPwd);
 			$statement->execute();
@@ -36,7 +36,7 @@ class DB {
 			$dbEmail = $this->connection->real_escape_string($email);
 			$dbPwd = password_hash($this->connection->real_escape_string($pwd), PASSWORD_DEFAULT);
 
-			$sql = "INSERT INTO `users` (`username`, `vorname`, `nachname`, `email`, `password`, `is_admin`) VALUES (?, ?, ?, ?, ?, 0)";
+			$sql = "INSERT INTO `users` (`username`, `vorname`, `nachname`, `email`, `password`, `is_admin`, `status`) VALUES (?, ?, ?, ?, ?, 0, 1)";
 			$statement = $this->connection->prepare($sql);
 			$statement->bind_param("sssss", $dbUser, $dbVor, $dbNach, $dbEmail, $dbPwd);
 
@@ -55,7 +55,7 @@ class DB {
 			$dbUser = $this->connection->real_escape_string($user);
 			$dbPwd = $this->connection->real_escape_string($pwd);
 
-			$sql = "SELECT * FROM users WHERE username = '$dbUser'";
+			$sql = "SELECT * FROM users WHERE username = '$dbUser' AND status = '1'";
 			$result = $this->connection->query($sql);
 
 			// check query results
@@ -71,12 +71,25 @@ class DB {
 		}
 	}
 
+	// get every user in database except admin
+	public function getAllUsers() {
+		if($this->connection) {
+			$sql = "SELECT * FROM users WHERE is_admin = '0'";
+			$result = $this->connection->query($sql);
+			$data = array();
+			
+			while ($row = $result->fetch_object()) {
+				array_push($data, $row);
+			}
+			return $data;
+		}
+	}
+
 	// get specific user data wich matches exisiting cookie
 	public function getUserCookie() {
 		if($this->connection) {
-			$sql = "SELECT * FROM users";
+			$sql = "SELECT * FROM users WHERE status = '1'";
 			$result = $this->connection->query($sql);
-			$data = array();
 			
 			while ($row = $result->fetch_object()) {
 				if (isset($_COOKIE[$row->username])) {
@@ -87,34 +100,69 @@ class DB {
 		}
 	}
 
-	// change User Data from form input
+	// change User Data from form input (profilverwaltung)
 	public function changeUserData($user, $vor, $nach, $email) {
-		$dbUser = $user->username;
-		$dbVor = $this->connection->real_escape_string($vor);
-		$dbNach = $this->connection->real_escape_string($nach);
-		$dbEmail = $this->connection->real_escape_string($email);
+		if($this->connection) {
+			$dbUser = $user->username;
+			$dbVor = $this->connection->real_escape_string($vor);
+			$dbNach = $this->connection->real_escape_string($nach);
+			$dbEmail = $this->connection->real_escape_string($email);
 
-		$sql = "UPDATE users SET vorname='$dbVor', nachname='$dbNach', email='$dbEmail' WHERE username='$dbUser'";
+			$sql = "UPDATE users SET vorname='$dbVor', nachname='$dbNach', email='$dbEmail' WHERE username='$dbUser'";
 
-		if ($this->connection->query($sql)) {
-			$user->updateUserData($dbVor, $dbNach, $dbEmail);
-			return true;
+			if ($this->connection->query($sql)) {
+				$user->updateUserData($dbVor, $dbNach, $dbEmail);
+				return true;
+			}
+			return false;
 		}
-		return false;
 	}
 
-	// change User Password from form input
-	public function changeUserPassword($user, $newPwd) {
-		$dbPwd = password_hash($this->connection->real_escape_string($newPwd), PASSWORD_DEFAULT);
-		$dbUser = $user->username;
+	// change User Password
+	public function changeUserPassword($user, $newPwd, $updateUser) {
+		if($this->connection) {
+			$dbPwd = password_hash($this->connection->real_escape_string($newPwd), PASSWORD_DEFAULT);
+			if($updateUser) {
+				$dbUser = $user->username;
+			} else {
+				$dbUser = $user;
+			}
+			
+			$sql = "UPDATE users SET password='$dbPwd' WHERE username='$dbUser'";
 
-		$sql = "UPDATE users SET password='$dbPwd' WHERE username='$dbUser'";
-
-		if ($this->connection->query($sql)) {
-			$user->updateUserPassword($dbPwd);
-			return true;
+			if ($this->connection->query($sql)) {
+				// change password of the currently loged in user (used in profilverwaltung, not used in userverwaltung)
+				if($updateUser) {
+					$user->updateUserPassword($dbPwd);
+				}
+				return true;
+			}
+			return false;
 		}
-		return false;
+	}
+
+	// delete specific user from database
+	public function deleteUser($dbUser) {
+		if($this->connection) {
+			$sql = "DELETE FROM users WHERE username='$dbUser'";
+			
+			if ($this->connection->query($sql)) {
+				return true;
+			}
+			return false;
+		}
+	}
+
+	// change status
+	public function changeStatus($dbStatus, $dbUser) {
+		if($this->connection) {
+			$sql = "UPDATE users SET status='$dbStatus' WHERE username='$dbUser'";
+
+			if ($this->connection->query($sql)) {
+				return true;
+			}
+			return false;
+		}
 	}
 
 	public function __destruct() {

@@ -13,7 +13,7 @@ if(isset($_POST['changeVor']) && isset($_POST['changeNach']) && isset($_POST['ch
 // change password if old password matches
 if(isset($_POST['changePwdOld']) && isset($_POST['changePwdNew'])) {
 	if (password_verify($_POST['changePwdOld'], $user->password)) {
-		$changePwd = $db->changeUserPassword($user, $_POST['changePwdNew']);
+		$changePwd = $db->changeUserPassword($user, $_POST['changePwdNew'], true);
 		if ($changePwd) {
 			$changePwdSuccess = '<div class="alert alert-success" role="alert">Passwort wurde erfolgreich geändert!</div>';
 		} else {

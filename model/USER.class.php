@@ -18,6 +18,7 @@ class USER {
 		$this->is_admin = $is_admin;
 	}
 
+	// set session variables, create cookie and redirect
 	public function loginUser($loginCheck) {
 		$_SESSION['loggedin'] = true;
 		$_SESSION['username'] =  $this->username;
@@ -50,11 +51,12 @@ class USER {
 		}
 	}
 
+	// delete cookie and session and redirect
 	public function logoutUser() {
-		// delete cookie and session when logging out
 		setcookie($this->username, true, time() - 3600); 
 		session_unset();
 		session_destroy();
+		
 		if($_GET['url'] == 'userverwaltung' || $_GET['url'] == 'bildverwaltung' || $_GET['url'] == 'profilverwaltung') {
 			header('Location:index.php?url=home');
 		} else {
@@ -62,6 +64,7 @@ class USER {
 		}
 	}
 
+	// update user vorname, nachname, email
 	public function updateUserData($dbVor, $dbNach, $dbEmail) {
 		$this->vorname = $dbVor;
 		$this->nachname = $dbNach;
@@ -72,6 +75,7 @@ class USER {
 		$_SESSION['email'] = $dbEmail;
 	}
 
+	// safe hashed password
 	public function updateUserPassword($dbPwd) {
 		$this->password = $dbPwd;
 		

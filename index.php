@@ -8,7 +8,7 @@
 	$db = new DB();
 
 	// if user is logged in create user object
-	if(isset($_SESSION['username'])) {
+	if(isset($_SESSION['loggedin'])) {
 		$user = new USER($_SESSION['username'], $_SESSION['vorname'], $_SESSION['nachname'], $_SESSION['email'], $_SESSION['password'], $_SESSION['admin']);
 	}
 
@@ -34,14 +34,15 @@
 	</head>
 
 	<body>
-		<!-- php include for each section -->
-		<?php 
+		<?php
+			// include for each page section
 			include './inc/header.php';
-			include "./inc/home.php";
-			include "./inc/hilfe.php";
-			include "./inc/impressum.php";
+			include './inc/home.php';
+			include './inc/hilfe.php';
+			include './inc/impressum.php';
 			include './inc/registrieren.php';
 			include './inc/profilverwaltung.php';
+			include './inc/userverwaltung.php';
 		?>
 
 		<!-- Footer -->
@@ -66,7 +67,8 @@
 		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-		<script src="./res/js/regValidation.js"></script>
+		<script src="./res/js/registrieren.js"></script>
+		<script src="./res/js/userverwaltung.js"></script>
 	</body>
 
 </html>

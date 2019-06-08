@@ -26,7 +26,8 @@ CREATE TABLE `users` (
   `nachname` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
   `password` varchar(100) NOT NULL,
-  `is_admin` boolean
+  `is_admin` boolean,
+  `status` boolean
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

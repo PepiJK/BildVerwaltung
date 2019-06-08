@@ -77,7 +77,7 @@
 					// omit the last item because of login (Array-Element is either 0 or 1)
 					if ($item === array_key_last($navigation)) { break; } ?>
 
-				<li class="nav-item <?php if ($_GET['url'] == $item) echo 'active' ?>">
+				<li class="nav-item <?php if ($_GET['url'] == $item) echo 'active border-bottom border-white' ?>">
 					<a class="nav-link" href="index.php?url=<?php echo $item ?>"><?php echo $element ?></a>
 				</li>
 
@@ -90,7 +90,7 @@
 				if (isset($errorMsg)) echo $errorMsg ?>
 
 			<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<i class="fas fa-sign-in-alt"></i>
+				<i class="fas fa-sign-in-alt text-white"></i>
 			</span>
 
 			<form class="dropdown-menu dropdown-menu-right p-4" action="./index.php?url=<?php echo $_GET['url'] ?>" method="post">
@@ -124,7 +124,7 @@
 			</ul>
 
 			<a href="./index.php?logout=true&url=<?php echo $_GET['url'] ?>">
-				<i class='fas fa-sign-out-alt'></i>
+				<i class='fas fa-sign-out-alt text-white'></i>
 			</a>
 
 			<?php } ?>
