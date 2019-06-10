@@ -244,6 +244,19 @@ class DB {
 		}
 	}
 
+	public function getUsersSharedImage($id) {
+		if($this->connection) {
+			$sql = "SELECT user_username FROM pictures_users WHERE picture_id = '$id'";
+			$result = $this->connection->query($sql);
+			$data = array();
+			
+			while ($row = $result->fetch_object()) {
+				array_push($data, $row);
+			}
+			return $data;
+		}
+	}
+
 	public function __destruct() {
 		$this->connection->close();
 	}

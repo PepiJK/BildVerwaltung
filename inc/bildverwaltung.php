@@ -150,21 +150,27 @@ if($_GET['url'] == 'bildverwaltung') {
 		$action = $_POST['action'];
 		switch($action) {
 			case 'getImageData': 
-				$data = $db->getPicturesFromId($_POST['id']);
-				$data = json_encode($data);
-				echo $data;
+				$dataPics = $db->getPicturesFromId($_POST['id']);
+				$dataPics = json_encode($dataPics);
+				echo $dataPics;
 				die();
 				break;
 			case 'getUsers': 
-				$data = $db->getAllUsersExcept($user->username);
-				$data = json_encode($data);
-				echo $data;
+				$dataUsers = $db->getAllUsersExcept($user->username);
+				$dataUSers = json_encode($dataUsers);
+				echo $dataUSers;
+				die();
+				break;
+			case 'getSharedUsers': 
+				$dataShared = $db->getUsersSharedImage($_POST['id']);
+				$dataShared = json_encode($dataShared);
+				echo $dataShared;
 				die();
 				break;
 			case 'safeSharedPictures':
-			print_r($_POST['users']);
-			die();
-			break;
+				print_r($_POST['users']);
+				die();
+				break;
 		}
 	}
 ?>
@@ -233,7 +239,8 @@ if($_GET['url'] == 'bildverwaltung') {
 					<?php if(empty($userImages)) echo '<div id="userImagesAlert" class="alert alert-info" role="alert">Der User besitzt keine Bilder</div>';
 					// Loop through every image that belungs to the user
 					foreach ($userImages as $image) { ?>
-					<img src="<?php echo $image->location_thumb ?>" class="img-fluid img-thumbnail pics" alt="<?php echo $image->name ?>" imgid="<?php echo $image->id ?>" onclick="userImageModal(this)">
+					<img src="<?php echo $image->location_thumb ?>" class="img-fluid img-thumbnail pics"
+						alt="<?php echo $image->name ?>" imgid="<?php echo $image->id ?>" onclick="userImageModal(this)">
 					<?php } ?>
 					<!-- Modal that gets called when image is clicked -->
 				</div>
@@ -245,11 +252,13 @@ if($_GET['url'] == 'bildverwaltung') {
 					<?php if(empty($sharedImages)) echo '<div id="sharedImagesAlert" class="alert alert-info" role="alert">Keine Bilder für diesen User freigegeben</div>';
 					// Loop through every image that is shared to the user
 					foreach ($sharedImages as $image) { ?>
-					<img src="<?php echo $image->location_thumb ?>" class="img-fluid img-thumbnail pics" data-toggle="modal" data-target="#sharedImageModal" alt="<?php echo $image->name ?>">
+					<img src="<?php echo $image->location_thumb ?>" class="img-fluid img-thumbnail pics" data-toggle="modal"
+						data-target="#sharedImageModal" alt="<?php echo $image->name ?>">
 					<?php } ?>
 				</div>
 
-				<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalTitle" aria-hidden="true">
+				<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalTitle"
+					aria-hidden="true">
 					<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
 						<div class="modal-content">
 							<div class="modal-header">

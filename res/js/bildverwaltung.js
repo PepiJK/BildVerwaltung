@@ -84,6 +84,7 @@ function userImageModal(e) {
 			//console.log(pictureResponse);
 			pictureResponse = JSON.parse(pictureResponse);
 
+
 			$.ajax({
 				url: 'index.php?url=bildverwaltung',
 				data:
@@ -95,7 +96,21 @@ function userImageModal(e) {
 					var usersResponse = response2.replace(/<!DOCTYPE html[\s\S]*?<\/header>/, '');
 					//console.log(usersResponse);
 					usersResponse = JSON.parse(usersResponse);
-					createModal(pictureResponse, usersResponse);
+
+					$.ajax({
+						url: 'index.php?url=bildverwaltung',
+						data:
+						{
+							action: 'getSharedUsers',
+							id: $(e).attr('imgid')
+						},
+						type: 'post',
+						success: function (response3) {
+							var pictureUsers = response3.replace(/<!DOCTYPE html[\s\S]*?<\/header>/, '');
+							console.log(pictureUsers);
+							//createModal(pictureResponse, usersResponse);
+						}
+					});
 				}
 			});
 		}
