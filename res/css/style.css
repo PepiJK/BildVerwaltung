@@ -6,3 +6,9 @@
 .teampics {
   width: 240px;
 }
+
+.pics {
+  /* TODO: Media Queries */
+  height: 125px;
+  cursor: pointer;
+}

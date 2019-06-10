@@ -29,6 +29,7 @@
 		}
 	}
 	
+	// load navigation from xml file
 	$navigationFile = simplexml_load_file('./config/navigation.xml');
 
 	// anonymous user

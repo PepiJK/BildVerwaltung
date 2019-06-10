@@ -85,6 +85,20 @@ class DB {
 		}
 	}
 
+	// get every user in database except admin and current loggedin user
+	public function getAllUsersExcept($user) {
+		if($this->connection) {
+			$sql = "SELECT username FROM users WHERE is_admin = '0' AND username != '$user'";
+			$result = $this->connection->query($sql);
+			$data = array();
+			
+			while ($row = $result->fetch_object()) {
+				array_push($data, $row);
+			}
+			return $data;
+		}
+	}
+
 	// get specific user data wich matches exisiting cookie
 	public function getUserCookie() {
 		if($this->connection) {
@@ -162,6 +176,71 @@ class DB {
 				return true;
 			}
 			return false;
+		}
+	}
+
+	// safe picture in database
+	public function safePicture($fileName, $name, $longitude, $latitude, $timestamp, $user) {
+		if($this->connection) {
+			$location = './pictures/uploads/' . $fileName;
+			$locationThumb = './pictures/thumbs/' . $fileName;
+			$userName = $user->username;
+
+			$sql = "INSERT INTO `pictures` (`name`, `location`, `location_thumb`, `latitude`, `longitude`, `date`, `user_username`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+			$statement = $this->connection->prepare($sql);
+			$statement->bind_param("sssddss", $name, $location, $locationThumb, $latitude, $longitude, $timestamp, $userName);
+			
+			// if statemanet is successfull return the id of the uploaded image
+			if($statement->execute()) {
+				$sql = "SELECT id FROM pictures ORDER BY id DESC LIMIT 0,1";
+				$result = $this->connection->query($sql);
+
+				// check query results
+				if ($result && $result->num_rows) {
+					// save query result in object
+					$query = $result->fetch_object();
+					return $query->id;
+				}
+			}
+		}
+	}
+
+	public function getUserImages($user) {
+		if($this->connection) {
+			$sql = "SELECT * FROM pictures WHERE user_username = '$user'";
+			$result = $this->connection->query($sql);
+			$data = array();
+			
+			while ($row = $result->fetch_object()) {
+				array_push($data, $row);
+			}
+			return $data;
+		}
+	}
+
+	public function getSharedImages($user) {
+		if($this->connection) {
+			$sql = "SELECT pictures.* FROM pictures LEFT JOIN pictures_users ON pictures_users.picture_id = pictures.id WHERE pictures_users.user_username = '$user'";
+			$result = $this->connection->query($sql);
+			$data = array();
+			
+			while ($row = $result->fetch_object()) {
+				array_push($data, $row);
+			}
+			return $data;
+		}
+	}
+
+	public function getPicturesFromId($id) {
+		if($this->connection) {
+			$sql = "SELECT * FROM pictures WHERE id = '$id'";
+			$result = $this->connection->query($sql);
+
+			if ($result && $result->num_rows) {
+				// save query result in object
+				$query = $result->fetch_object();
+				return $query;
+			}
 		}
 	}
 

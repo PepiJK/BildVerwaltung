@@ -1,30 +1,29 @@
 <?php 
 
-// change personal data
-if(isset($_POST['changeVor']) && isset($_POST['changeNach']) && isset($_POST['changeEmail'])) {
-	$changeData = $db->changeUserData($user, $_POST['changeVor'], $_POST['changeNach'], $_POST['changeEmail']);
-	if($changeData) {
-		$changeDataSuccess = '<div class="alert alert-success" role="alert">Daten wurden erfolgreich geändert!</div>';
-	} else {
-		$changeDataSuccess = '<div class="alert alert-danger" role="alert">Daten konnten leider nicht geändert werden!</div>';
-	}
-}
-
-// change password if old password matches
-if(isset($_POST['changePwdOld']) && isset($_POST['changePwdNew'])) {
-	if (password_verify($_POST['changePwdOld'], $user->password)) {
-		$changePwd = $db->changeUserPassword($user, $_POST['changePwdNew'], true);
-		if ($changePwd) {
-			$changePwdSuccess = '<div class="alert alert-success" role="alert">Passwort wurde erfolgreich geändert!</div>';
+if ($_GET['url'] == 'profilverwaltung') { 
+	// change personal data
+	if(isset($_POST['changeVor']) && isset($_POST['changeNach']) && isset($_POST['changeEmail'])) {
+		$changeData = $db->changeUserData($user, $_POST['changeVor'], $_POST['changeNach'], $_POST['changeEmail']);
+		if($changeData) {
+			$changeDataSuccess = '<div class="alert alert-success" role="alert">Daten wurden erfolgreich geändert!</div>';
 		} else {
-			$changePwdSuccess = '<div class="alert alert-danger" role="alert">Passwort konnten leider nicht geändert werden!</div>';
+			$changeDataSuccess = '<div class="alert alert-danger" role="alert">Daten konnten leider nicht geändert werden!</div>';
 		}
-	} else {
-		$errorPwdMatch = '<div class="alert alert-danger" role="alert">Altes Passwort stimmt nicht überein</div>';
 	}
-}
 
-if ($_GET['url'] == 'profilverwaltung') { ?>
+	// change password if old password matches
+	if(isset($_POST['changePwdOld']) && isset($_POST['changePwdNew'])) {
+		if (password_verify($_POST['changePwdOld'], $user->password)) {
+			$changePwd = $db->changeUserPassword($user, $_POST['changePwdNew'], true);
+			if ($changePwd) {
+				$changePwdSuccess = '<div class="alert alert-success" role="alert">Passwort wurde erfolgreich geändert!</div>';
+			} else {
+				$changePwdSuccess = '<div class="alert alert-danger" role="alert">Passwort konnten leider nicht geändert werden!</div>';
+			}
+		} else {
+			$errorPwdMatch = '<div class="alert alert-danger" role="alert">Altes Passwort stimmt nicht überein</div>';
+		}
+	} ?>
 
 <main>
 	<div class="container mt-3">

@@ -13,7 +13,7 @@
 	}
 
 	// standard url = home
-	if (!isset($_GET['url'])) {
+	if (!isset($_GET['url']) || empty($_GET['url'])) {
 		$_GET['url'] = 'home';
 	}
 
@@ -30,6 +30,7 @@
 
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+		<link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
 		<link rel="stylesheet" href="./res/css/style.css">
 	</head>
 
@@ -38,6 +39,7 @@
 			// include for each page section
 			include './inc/header.php';
 			include './inc/home.php';
+			include './inc/bildverwaltung.php';
 			include './inc/hilfe.php';
 			include './inc/impressum.php';
 			include './inc/registrieren.php';
@@ -67,8 +69,11 @@
 		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+		<script src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
+		<script src="./res/js/dropzoneConfig.js"></script>
 		<script src="./res/js/registrieren.js"></script>
 		<script src="./res/js/userverwaltung.js"></script>
+		<script src="./res/js/bildverwaltung.js"></script>
 	</body>
 
 </html>

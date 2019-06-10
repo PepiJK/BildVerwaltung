@@ -35,29 +35,56 @@ CREATE TABLE `users` (
 --
 -- Indizes für die Tabelle `users`
 --
-ALTER TABLE `users`
-ADD PRIMARY KEY (`username`);
+
+ALTER TABLE `users` ADD PRIMARY KEY (`username`);
 
 -- --------------------------------------------------------
 
 --
--- Admin User in die Tabelle `users` einfügen
--- Passwort = 12345
+-- Tabellenstruktur für Tabelle `pictures`
 --
 
--- INSERT INTO `users` (`username`, `vorname`, `nachname`, `email`, `password`, `is_admin`) 
--- VALUES ("admin", "adminVorname", "adminNachname", "adminEmail", "$2y$10$RxG6taFmPvxRcTuHuOJo/.aiwiLz71Ph1xgwDKPmyNKWx7Lt8NIF.", 1);
-
-
---
--- Tabellenstruktur für Tabelle `messages`
---
-/*
-CREATE TABLE `messages` (
-  `messageid` int(11) NOT NULL,
-  `messagetext` varchar(500) NOT NULL
+CREATE TABLE `pictures` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `location` varchar(200) NOT NULL,
+  `location_thumb` varchar(200) NOT NULL,
+  `latitude` float,
+  `longitude` float,
+  `date` timestamp,
+  `user_username` varchar(50) NOT NULL,
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-*/
+
+-- --------------------------------------------------------
+
+--
+-- Indizes für die Tabelle `pictures`
+--
+
+ALTER TABLE `pictures` ADD FOREIGN KEY (`user_username`) REFERENCES users(`username`);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `pictures_users`
+-- Zuständig für Freigabe der Bilder an andere User
+--
+
+CREATE TABLE `pictures_users` (
+  `picture_id` int NOT NULL,
+  `user_username` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Indizes für die Tabelle `pictures`
+--
+
+ALTER TABLE `pictures_users` ADD FOREIGN KEY (`picture_id`) REFERENCES pictures(`id`);
+ALTER TABLE `pictures_users` ADD FOREIGN KEY (`user_username`) REFERENCES users(`username`);
+
 -- --------------------------------------------------------
 
 --
