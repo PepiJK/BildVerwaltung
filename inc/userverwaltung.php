@@ -18,9 +18,8 @@ if ($_GET['url'] == 'userverwaltung') {
 				// create 16 character random password containing number 0-9 and letters a-f
 				$bytes = openssl_random_pseudo_bytes(8);
 				$pseudoPwd = bin2hex($bytes);
-				$newPwd = password_hash($pseudoPwd, PASSWORD_DEFAULT);
 			
-				$db->changeUserPassword($_POST['name'], $newPwd, false);
+				$db->changeUserPassword($_POST['name'], $pseudoPwd, false);
 
 				// send generated password via email
 				$to = $_POST['email'];
