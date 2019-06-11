@@ -150,19 +150,16 @@ if($_GET['url'] == 'bildverwaltung') {
 				$dataPics = $db->getPicturesFromId($_POST['id']);
 				$dataPics = json_encode($dataPics);
 				echo $dataPics;
-				die();
 				break;
 			case 'getUsers': 
 				$dataUsers = $db->getAllUsersExcept($user->username);
 				$dataUsers = json_encode($dataUsers);
 				echo $dataUsers;
-				die();
 				break;
 			case 'getSharedUsers': 
 				$dataShared = $db->getUsersSharedImage($_POST['id']);
 				$dataShared = json_encode($dataShared);
 				echo $dataShared;
-				die();
 				break;
 			case 'setSharedUsers':
 				if(!isset($_POST['checkedusers'])){
@@ -171,9 +168,34 @@ if($_GET['url'] == 'bildverwaltung') {
 					$_POST['uncheckedusers'] = NULL;
 				}
 				$db->setSharedUser($_POST['id'], $_POST['checkedusers'], $_POST['uncheckedusers']);
-				die();
+				break;
+			case 'deleteSharedImage':
+				$db->deleteSharedImage($_POST['id'], $user->username);
+				break;
+			case 'deleteImage':
+				$image = $db->getPicturesFromId($_POST['id']);
+				unlink($image->location);
+				unlink($image->location_thumb);
+				$db->deleteImage($_POST['id']);
+				break;
+			case 'duplicateImage':
+				// get the Information of the current picture
+				$imageInfos = $db->getPicturesFromId($_POST['id']);
+
+				// create new filename and date and store copy in datbase
+				$newImageFileName = uniqid() . '.' . pathinfo($imageInfos->location, PATHINFO_EXTENSION);
+				$newImageDate = date('Y-m-d H:i:s');
+				$newImageInfos = $db->duplicateImage($imageInfos, $newImageFileName, $newImageDate);
+
+				// copy image and thumbnail 
+				copy($imageInfos->location, $newImageInfos->location);
+				copy($imageInfos->location_thumb, $newImageInfos->location_thumb);
+
+				$newImageInfos = json_encode($newImageInfos);
+				echo $newImageInfos;
 				break;
 		}
+		die();
 	}
 ?>
 

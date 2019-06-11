@@ -155,15 +155,19 @@ class DB {
 		}
 	}
 
-	// delete specific user from database
+	// delete specific user and his pictures from database
 	public function deleteUser($dbUser) {
 		if($this->connection) {
+			$sql = "SET FOREIGN_KEY_CHECKS=0";
+			$this->connection->query($sql);
+			$sql = "DELETE FROM pictures WHERE user_username='$dbUser'";
+			$this->connection->query($sql);
+			$sql = "DELETE FROM pictures_users WHERE user_username='$dbUser'";
+			$this->connection->query($sql);
 			$sql = "DELETE FROM users WHERE username='$dbUser'";
-			
-			if ($this->connection->query($sql)) {
-				return true;
-			}
-			return false;
+			$this->connection->query($sql);
+			$sql = "SET FOREIGN_KEY_CHECKS=1";
+			$this->connection->query($sql);
 		}
 	}
 
@@ -265,17 +269,62 @@ class DB {
 					SELECT * FROM (SELECT '$id', '$user') AS tmp WHERE NOT EXISTS (
 						SELECT picture_id, user_username FROM pictures_users WHERE picture_id = '$id' AND user_username = '$user'
 					) LIMIT 1";
-					$result = $this->connection->query($sql);
+					$this->connection->query($sql);
 				}
 			}
 			if($uncheckedUsers != NULL) {
 				foreach ($uncheckedUsers as $user) {
 					$sql = "DELETE FROM pictures_users WHERE picture_id='$id' AND user_username = '$user'";
-					$result = $this->connection->query($sql);
+					$this->connection->query($sql);
 				}
 			}
 		}
 	}
+
+	public function deleteSharedImage($id, $user) {
+		if($this->connection) {
+			$sql = "DELETE FROM pictures_users WHERE picture_id='$id' AND user_username = '$user'";
+			$this->connection->query($sql);
+		}
+	}
+
+	public function deleteImage($id) {
+		if($this->connection) {
+			$sql = "DELETE FROM pictures_users WHERE picture_id ='$id'";
+			$this->connection->query($sql);
+			$sql = "DELETE FROM pictures WHERE id='$id'";
+			$this->connection->query($sql);
+		}
+	}
+
+	public function duplicateImage($imageInfos, $fileName, $date) {
+		if($this->connection) {
+			$name = $imageInfos->name;
+			$location = './pictures/uploads/' . $fileName;
+			$locationThumb = './pictures/thumbs/' . $fileName;
+			$lat = $imageInfos->latitude;
+			$lon = $imageInfos->longitude;
+			$user = $imageInfos->user_username;
+			
+			$sql = "INSERT INTO `pictures` (`name`, `location`, `location_thumb`, `latitude`, `longitude`, `date`, `user_username`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+			$statement = $this->connection->prepare($sql);
+			$statement->bind_param("sssddss", $name, $location, $locationThumb, $lat, $lon, $date, $user);
+			
+			// if statemanet is successfull return the uploaded image
+			if($statement->execute()) {
+				$sql = "SELECT * FROM pictures ORDER BY id DESC LIMIT 0,1";
+				$result = $this->connection->query($sql);
+
+				// check query results
+				if ($result && $result->num_rows) {
+					// save query result in object
+					$query = $result->fetch_object();
+					return $query;
+				}
+			}
+		}
+	}
+
 
 	public function __destruct() {
 		$this->connection->close();

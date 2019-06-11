@@ -6,6 +6,11 @@ if ($_GET['url'] == 'userverwaltung') {
 		$action = $_POST['action'];
 		switch($action) {
 			case 'deleteUser': 
+				$images = $db->getUserImages($_POST['name']);
+				foreach ($images as $image) {
+					unlink($image->location);
+					unlink($image->location_thumb);
+				}
 				$db->deleteUser($_POST['name']);
 				break;
 

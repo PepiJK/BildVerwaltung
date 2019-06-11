@@ -105,12 +105,8 @@
 					<input type="checkbox" class="form-check-input" name="loginCheck" id="loginCheck">
 					<label class="form-check-label" for="loginCheck"> Eingeloggt bleiben </label>
 				</div>
-				<div class="text-center mt-2">
+				<div class="text-center mt-3">
 					<button type="submit" class="btn btn-primary">Login</button>
-					<button type="button" class="btn btn-secondary" onclick="self.location='./index.php?url=forgotlogin'">Login vergessen</button>
-				</div>
-				<hr>
-				<div class="text-center">
 					<button type="button" class="btn btn-primary" onclick="self.location='./index.php?url=userregistration'">Registrieren</button>
 				</div>
 			</form>
