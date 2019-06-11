@@ -142,9 +142,6 @@ if($_GET['url'] == 'bildverwaltung') {
 	// get every image that is shared to the user
 	$sharedImages = $db->getSharedImages($user->username);
 
-	// get every normal user
-	$allUsers = $db->getAllUsers();
-
 	// bildverwaltung.js ajax calls
 	if(isset($_POST['action']) && !empty($_POST['action'])) {
 		$action = $_POST['action'];
@@ -157,8 +154,8 @@ if($_GET['url'] == 'bildverwaltung') {
 				break;
 			case 'getUsers': 
 				$dataUsers = $db->getAllUsersExcept($user->username);
-				$dataUSers = json_encode($dataUsers);
-				echo $dataUSers;
+				$dataUsers = json_encode($dataUsers);
+				echo $dataUsers;
 				die();
 				break;
 			case 'getSharedUsers': 
@@ -167,8 +164,13 @@ if($_GET['url'] == 'bildverwaltung') {
 				echo $dataShared;
 				die();
 				break;
-			case 'safeSharedPictures':
-				print_r($_POST['users']);
+			case 'setSharedUsers':
+				if(!isset($_POST['checkedusers'])){
+					$_POST['checkedusers'] = NULL;
+				} else if(!isset($_POST['uncheckedusers'])){
+					$_POST['uncheckedusers'] = NULL;
+				}
+				$db->setSharedUser($_POST['id'], $_POST['checkedusers'], $_POST['uncheckedusers']);
 				die();
 				break;
 		}
@@ -178,25 +180,6 @@ if($_GET['url'] == 'bildverwaltung') {
 <main>
 	<div class="container mt-3">
 		<h1>Bildverwaltung</h1>
-
-
-		<!--
-		<form enctype="multipart/form-data" action="./index?url=bildverwaltung" method="POST">
-			<div class="input-group">
-				<div class="input-group-prepend">
-					<input class="input-group-text" type="submit" value="Upload" />
-				</div>
-				<div class="custom-file">
-					<input type="hidden" name="MAX_FILE_SIZE" value="2000000" />
-					<input type="file" name="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
-					<label class="custom-file-label" for="inputGroupFile01">Bild auswählen</label>
-				</div>
-			</div>
-		</form>
-		-->
-
-
-
 		<div class="row">
 			<div class="col-12 col-lg-4 mb-5 mb-lg-0">
 				<!-- Drag & Drop with dropzone.js -->
@@ -206,31 +189,6 @@ if($_GET['url'] == 'bildverwaltung') {
 						<div class="dz-message">Bilder hereinziehen</div>
 					</form>
 				</div>
-
-
-				<hr>
-
-				<h2>Bilder bearbeiten</h2>
-				<!-- form to edit images -->
-				<form action="./index.php?url=bildverwaltung" method="POST">
-					<div class="form-group">
-						<!-- selected images will be displayed here -->
-						<div class="mb-2" id="imgEdit"></div>
-						<input id="imgSrc" type="hidden" name="imgSrc">
-						<div class="row">
-							<div class="col col-lg-7">
-								<select name="selectEdit" class="form-control">
-									<option value="grey">Graustufen</option>
-									<option value="90left">90° nach links</option>
-									<option value="90right">90° nach rechts</option>
-								</select>
-							</div>
-							<div class="col col-lg">
-								<button type="submit" class="btn btn-primary">bearbeiten</button>
-							</div>
-						</div>
-					</div>
-				</form>
 			</div>
 
 			<div class="col col-lg">
@@ -239,8 +197,7 @@ if($_GET['url'] == 'bildverwaltung') {
 					<?php if(empty($userImages)) echo '<div id="userImagesAlert" class="alert alert-info" role="alert">Der User besitzt keine Bilder</div>';
 					// Loop through every image that belungs to the user
 					foreach ($userImages as $image) { ?>
-					<img src="<?php echo $image->location_thumb ?>" class="img-fluid img-thumbnail pics"
-						alt="<?php echo $image->name ?>" imgid="<?php echo $image->id ?>" onclick="userImageModal(this)">
+					<img src="<?php echo $image->location_thumb ?>" class="img-fluid img-thumbnail pics" alt="<?php echo $image->name ?>" imgid="<?php echo $image->id ?>" onclick="userImageModal(1, this)">
 					<?php } ?>
 					<!-- Modal that gets called when image is clicked -->
 				</div>
@@ -248,17 +205,15 @@ if($_GET['url'] == 'bildverwaltung') {
 				<hr>
 
 				<h2>Für mich freigegeben</h2>
-				<div id="sharedImages">
+				<div id="sharedImages" class="mb-3">
 					<?php if(empty($sharedImages)) echo '<div id="sharedImagesAlert" class="alert alert-info" role="alert">Keine Bilder für diesen User freigegeben</div>';
 					// Loop through every image that is shared to the user
 					foreach ($sharedImages as $image) { ?>
-					<img src="<?php echo $image->location_thumb ?>" class="img-fluid img-thumbnail pics" data-toggle="modal"
-						data-target="#sharedImageModal" alt="<?php echo $image->name ?>">
+					<img src="<?php echo $image->location_thumb ?>" class="img-fluid img-thumbnail pics" alt="<?php echo $image->name ?>" imgid="<?php echo $image->id ?>" onclick="userImageModal(0, this)">
 					<?php } ?>
 				</div>
 
-				<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalTitle"
-					aria-hidden="true">
+				<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalTitle" aria-hidden="true">
 					<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
@@ -274,9 +229,6 @@ if($_GET['url'] == 'bildverwaltung') {
 						</div>
 					</div>
 				</div>
-
-
-
 
 			</div>
 		</div>

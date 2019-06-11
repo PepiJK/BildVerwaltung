@@ -17,7 +17,7 @@ Dropzone.options.dropzoneForm = {
 		var img = $('<img/>', {
 			src: response.fileLocationThumb,
 			class: 'img-fluid img-thumbnail pics',
-			onclick: 'userImageModal(this)',
+			onclick: 'userImageModal(1, this)',
 			alt: response.fileName,
 			imgid: response.id,
 		});

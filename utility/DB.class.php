@@ -257,6 +257,26 @@ class DB {
 		}
 	}
 
+	public function setSharedUser($id, $checkedUsers, $uncheckedUsers) {
+		if($this->connection) {
+			if($checkedUsers != NULL) {
+				foreach ($checkedUsers as $user) {
+					$sql = "INSERT INTO pictures_users (picture_id, user_username) 
+					SELECT * FROM (SELECT '$id', '$user') AS tmp WHERE NOT EXISTS (
+						SELECT picture_id, user_username FROM pictures_users WHERE picture_id = '$id' AND user_username = '$user'
+					) LIMIT 1";
+					$result = $this->connection->query($sql);
+				}
+			}
+			if($uncheckedUsers != NULL) {
+				foreach ($uncheckedUsers as $user) {
+					$sql = "DELETE FROM pictures_users WHERE picture_id='$id' AND user_username = '$user'";
+					$result = $this->connection->query($sql);
+				}
+			}
+		}
+	}
+
 	public function __destruct() {
 		$this->connection->close();
 	}
