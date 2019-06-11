@@ -189,11 +189,10 @@ function userImageModal(userOrShared, e) {
 				$("#modalFooter").empty();
 				$('#modalFooter').prepend(btnGroup);
 			}
-
-			// open modal
-			$('#imageModal').modal('show');
 		}
 	});
+	// open modal
+	$('#imageModal').modal('show');
 }
 
 
